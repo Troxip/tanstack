@@ -10,6 +10,7 @@ import NewEvent from "./components/Events/NewEvent.jsx";
 import EditEvent from "./components/Events/EditEvent.jsx";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./util/http.js";
+import { Toaster } from "react-hot-toast";
 
 const router = createBrowserRouter([
   {
@@ -41,9 +42,12 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />;
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <Toaster />
+        <RouterProvider router={router} />;
+      </QueryClientProvider>
+    </>
   );
 }
 
