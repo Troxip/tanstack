@@ -3,8 +3,12 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient();
 
 export async function fetchEvents({ signal, searchTerm }) {
-  let url = `http://localhost:3000/events`;
-  if (searchTerm) url += `?search=${searchTerm}`;
+  console.log(searchTerm);
+  let url = "http://localhost:3000/events";
+
+  if (searchTerm) {
+    url += "?search=" + searchTerm;
+  }
 
   const response = await fetch(url, { signal: signal });
 
@@ -21,7 +25,7 @@ export async function fetchEvents({ signal, searchTerm }) {
 }
 
 export async function createNewEvent(eventData) {
-  const response = await fetch("http://localhost:3000/events", {
+  const response = await fetch(`http://localhost:3000/events`, {
     method: "POST",
     body: JSON.stringify(eventData),
     headers: {
@@ -33,6 +37,7 @@ export async function createNewEvent(eventData) {
     const error = new Error("An error occurred while creating the event");
     error.code = response.status;
     error.info = await response.json();
+    throw error;
   }
 
   const { event } = await response.json();
@@ -41,7 +46,7 @@ export async function createNewEvent(eventData) {
 }
 
 export async function fetchSelectableImages({ signal }) {
-  const response = await fetch("http://localhost:3000/events/images", {
+  const response = await fetch(`http://localhost:3000/events/images`, {
     signal,
   });
 
@@ -73,6 +78,7 @@ export async function fetchEvent({ id, signal }) {
 
   return event;
 }
+
 export async function deleteEvent({ id }) {
   const response = await fetch(`http://localhost:3000/events/${id}`, {
     method: "DELETE",
@@ -80,6 +86,25 @@ export async function deleteEvent({ id }) {
 
   if (!response.ok) {
     const error = new Error("An error occurred while deleting the event");
+    error.code = response.status;
+    error.info = await response.json();
+    throw error;
+  }
+
+  return response.json();
+}
+
+export async function updateEvent({ id, event }) {
+  const response = await fetch(`http://localhost:3000/events/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ event }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = new Error("An error occurred while updating the event");
     error.code = response.status;
     error.info = await response.json();
     throw error;
