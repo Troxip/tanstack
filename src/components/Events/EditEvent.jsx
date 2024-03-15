@@ -31,6 +31,9 @@ export default function EditEvent() {
     onError: (error, data, context) => {
       queryClient.setQueryData(["events", id], context.previousEvent);
     },
+    onSettled: () => {
+      queryClient.invalidateQueries(["events", id]);
+    },
   });
 
   function handleSubmit(formData) {
